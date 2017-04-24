@@ -1,0 +1,12 @@
+version: 2.0
+
+services:
+
+  users:
+    build: users
+
+  user_mailer:
+    build: user_mailer
+
+  events:
+    build: events

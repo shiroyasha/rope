@@ -1,0 +1,19 @@
+version: 1.0
+name: "user_mailer"
+
+interface:
+  send_thanks_for_singing_up:
+    async: true
+    args:
+      username: string
+
+  send_purchase_confirmed:
+    async: true
+    args:
+      username: string
+      plan: string
+
+  ask_why_are_you_leaving:
+    async: true
+    args:
+      username: string

@@ -1,0 +1,29 @@
+version: 1.0
+name: "events"
+
+models:
+  event:
+    name: string
+    created_at: int
+
+interface:
+  record:
+    async: true
+    args:
+      name: string
+
+  count:
+    args:
+      name: string
+      from_timestamp: int
+      to_timestamp: int
+
+    response: [event]
+
+  list:
+    args:
+      name: string
+      from_timestamp: int
+      to_timestamp: int
+
+    response: [event]

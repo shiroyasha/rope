@@ -1,0 +1,33 @@
+version: 1.0
+name: "users"
+
+models:
+  user:
+    username: string
+    email: string
+    created_at: int
+    updated_at: int
+    confirmed: bool
+
+interface:
+  list_all:
+    response: [user]
+
+  list:
+    args:
+      pattern: string
+    response: [user]
+
+  register:
+    args:
+      username: string
+      email: string
+
+    response:
+      success: bool
+      reason: string
+
+  unregister:
+    args:
+      - username: string
+    response: bool

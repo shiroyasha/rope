@@ -1,7 +1,5 @@
 require "rope/server"
 
-Rope::Server.async_engine = { :engine => :amqp, :url => ENV["amqp_url"] }
-
 ActiveRecord::Base.establish_connection(ENV["DB_URL"])
 
 class Event < ActiveRecord::Base
@@ -14,6 +12,7 @@ class Event < ActiveRecord::Base
 end
 
 class UserMailer < Rope::Server
+  async_engine :engine => :amqp, :url => ENV["ampp_url"]
 
   def record(name)
     Event.create(:name => name)
@@ -26,5 +25,6 @@ class UserMailer < Rope::Server
   def list(name, from, to)
     Event.where(:name => name).where(:created_at => [from..to]).map(&:serialize)
   end
-
 end
+
+UserMailer.start(ARGV)

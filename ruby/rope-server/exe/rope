@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require "rope/server"
+require "pp"
+require "json"
+
+entrypoint = ARGV[0]
+service_definition = File.join(Dir.pwd, "service.yml")
+port = 3000
+
+load entrypoint
+
+service = Rope::Service.new(service_definition)
+
+puts "#{service.name.upcase} listening on host:#{port}"
+
+children = ObjectSpace.each_object(::Class).select { |klass| klass < Rope::Server }
+
+controller = children.first
+
+puts "Request handler: #{controller.name}"
+
+app = Proc.new do |env|
+  request_path =  env["REQUEST_PATH"]
+
+  if request_path == "/"
+    ['200', {'Content-Type' => 'application/json'}, [service.interface.actions.map(&:name).to_json]]
+  else
+    bare_path = request_path[1..-1]
+
+    puts "Bare path: #{bare_path}"
+
+    action = service.interface.actions.find { |action| action.name == bare_path }
+
+    if action
+      instance = controller.new
+
+      response = instance.public_send(action.name, "a")
+
+      ['200', {'Content-Type' => 'application/json'}, [response.to_json]]
+    else
+      ['404', {'Content-Type' => 'application/json'}, ['No such action']]
+    end
+  end
+end
+
+Rack::Handler::WEBrick.run app

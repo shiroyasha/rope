@@ -1,0 +1,13 @@
+version: 1.0
+name: "tester"
+
+interface:
+  sync_test:
+    args:
+      a: string
+    response: string
+
+  async_test:
+    async: true
+    args:
+      a: string
